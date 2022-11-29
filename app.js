@@ -2,8 +2,10 @@ const array1 = [100, 50, 200, 400, 20, 60, 10, 90, 300, 200];
 const array2 = [20, 30, 40, 10, 5, 80, 100, 60];
 const array3 = [20, 5, 15, 35, 10, 50, 80, 40]; // maxprofit for this will be 240 not 320 because 80X3 = 240 not 320
 
-console.log(maxProfit(array4));
 
+
+
+// find the max profit from the given data
 function maxProfit(array) {
     let today = 0;
     let end = array.length - 1;
@@ -22,7 +24,7 @@ function maxProfit(array) {
         }
 
         if (!isBought) {
-            today = findBestLotToBuy(array, today, end, farthestDay);
+            today = findBestLotToBuy(array, today, end, farthestDay); // find the best lot index to buy
             buy = array[today];
             if (today === undefined) { break; }
             if (profit > 0) {
@@ -31,21 +33,14 @@ function maxProfit(array) {
             } else {
                 profit -= +buy;
             }
-
-            console.log("bought: " + buy);
-
             isBought = true;
         } else {
-            today = findBestLotToSell(array, today, end, farthestDay);
+            today = findBestLotToSell(array, today, end, farthestDay); // find the best lot index to sell
             sell = array[today];
-            console.log('sold: ', sell);
-            profit += quantity * +sell;
+            profit += quantity * +sell;// update the profit
             isBought = false;
         }
-        console.log('profit: ', profit);
-
     }
-
     return profit;
 }
 
@@ -60,16 +55,15 @@ function findBestLotToBuy(array, today, end, farthestDay) {
         return;
     }
 
-
     for (let i = today + 1; i < today + farthestDay; i++) {
         if (array[i] < cheapestLot) {
             cheapestLot = array[i];
             today = i;
         }
     }
-
     return today;
 }
+
 
 // find the closest and most expensive lot
 function findBestLotToSell(array, today, end, farthestDay) {
@@ -86,8 +80,10 @@ function findBestLotToSell(array, today, end, farthestDay) {
             today = i;
         }
     }
-
-
     return today;
 }
 
+
+//----------------------- test --------------------------------\\
+
+console.log("Max profit from this array is: " + maxProfit(array3));
