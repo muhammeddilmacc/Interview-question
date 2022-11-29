@@ -3,36 +3,49 @@ const array2 = [20, 30, 40, 10, 5, 80, 100, 60];
 const array3 = [20, 10, 5, 30, 60, 90, 40, 50];
 const array4 = [20, 5, 15, 35, 10, 50, 80, 40];
 
-//console.log(findBestLotToBuy(array3, 0, array3.length - 1));
 console.log(maxProfit(array4));
 
 function maxProfit(array) {
     let today = 0;
     let end = array.length - 1;
     let profit = 0;
-    let buy;
-    let sell;
+    let balance = 0;
+    let quantity = 1;
+    let buy = 0;
+    let sell = 0;
     let isBought = false;
+    let isDone = false;
     let farthestDay = (end - today) > 3 ? Math.round((end - today) * 0.25) : (end - today);
 
     while (today < end) {
 
 
-        if (today === -1) {
+        if (isDone) {
             break;
         }
 
         if (!isBought) {
             today = findBestLotToBuy(array, today, end, farthestDay);
             buy = array[today];
-            profit = +profit ? profit + (sell - buy) : -9999;
+
+            if (profit > 0 && buy != undefined) {
+                quantity = Math.floor(profit / +buy);
+                profit -= quantity * +buy;
+            } else {
+                profit -= +buy;
+            }
+
+            console.log("bought: " + buy);
+
             isBought = true;
         } else {
             today = findBestLotToSell(array, today, end, farthestDay);
             sell = array[today];
-            profit += sell - buy;
+            console.log('sold: ', sell);
+            profit += quantity * +sell;
             isBought = false;
         }
+        console.log('profit: ', profit);
 
     }
 
@@ -42,8 +55,13 @@ function maxProfit(array) {
 
 
 // find the closest and cheapest lot
-function findBestLotToBuy(array, today, end) {
+function findBestLotToBuy(array, today, end, farthestDay) {
     let cheapestLot = array[today];
+
+    if (end - today < Math.round((array.length - 1) * 0.25)) {
+        isDone = true;
+        return;
+    }
 
     for (let i = today + 1; i < today + farthestDay; i++) {
         if (array[i] < cheapestLot) {
@@ -52,26 +70,24 @@ function findBestLotToBuy(array, today, end) {
         }
     }
 
-    if (end - today < (array.length - 1) * 0.25) {
-        today = -1;
-    }
-
     return today;
 }
 
 // find the closest and most expensive lot
-function findBestLotToSell(array, today, end) {
-    let mostExpensive = array[today];
+function findBestLotToSell(array, today, end, farthestDay) {
+    let mostExpensiveLot = array[today];
 
+    if (end - today < (array.length - 1) * 0.25) {
+        isDone = true;
+        return;
+    }
     for (let i = today + 1; i < today + farthestDay; i++) {
-        if (array[i] > mostExpensive) {
-            mostExpensive = array[i];
+        if (array[i] > mostExpensiveLot) {
+            mostExpensiveLot = array[i];
             today = i;
         }
     }
-    if (end - today < (array.length - 1) * 0.25) {
-        today = -1;
-    }
+
     return today;
 }
 
